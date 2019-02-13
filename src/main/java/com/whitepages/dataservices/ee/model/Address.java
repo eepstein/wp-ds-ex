@@ -3,17 +3,21 @@ package com.whitepages.dataservices.ee.model;
 
 import lombok.*;
 
-import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
 
-@Embeddable
-public class Address implements Serializable {
+@Entity
+public class Address extends EntityBase implements Serializable {
     private static final long serialVersionUID = 5284969669603275986L;
 
     private String street;
@@ -28,5 +32,20 @@ public class Address implements Serializable {
      */
     private Double latitude;
     private Double longitude;
+
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "addresses")
+    private Set<Person> people;
+
+    public boolean addPerson(final Person p) {
+        if (people == null) {
+            people = new HashSet<>();
+        }
+        return people.add(p);
+    }
+
+    public boolean hasPerson(final Person p) {
+        return (people != null) && people.contains(p);
+    }
 
 }

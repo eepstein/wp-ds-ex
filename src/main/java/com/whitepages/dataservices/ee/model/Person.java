@@ -42,11 +42,13 @@ public class Person extends EntityBase {
     )
     private Set<PersonIdentifier> identifiers = new HashSet<>();
 
+    @ToString.Exclude
     @Fetch(FetchMode.JOIN)
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "person_address"
-                , joinColumns = {@JoinColumn(name = "profile_id")}
-    )
+    @ManyToMany
+    @JoinTable(name="PERSON_ADDRESSES")
+//    @CollectionTable(name = "person_address"
+//                , joinColumns = {@JoinColumn(name = "profile_id")}
+//    )
     private Set<Address> addresses;
 
     public Person(final Long id) {
@@ -95,6 +97,7 @@ public class Person extends EntityBase {
         if (addresses == null) {
             addresses = new HashSet<>();
         }
+        addr.addPerson(this);
         return addresses.add(addr);
     }
 
